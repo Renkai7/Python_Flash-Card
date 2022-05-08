@@ -10,12 +10,13 @@ FONT_NAME = "Arial"
 data = pandas.read_csv("data/french_words.csv")
 data_dict = data.set_index("French")["English"].to_dict()
 translation_dict = {row.French: row.English for (index, row) in data.iterrows()}
-# print(random.choice(list(translation_dict.items())))
-print(list(translation_dict.keys())[0])
+
 
 def generate_word():
-
-    title_text.config(text=list(translation_dict.keys())[0])
+    front_card_title = "French"
+    word = random.choice(list(translation_dict.keys()))
+    front_card.itemconfig(title_text, text=front_card_title)
+    front_card.itemconfig(word_text, text=word)
 
 
 # ---- UI Setup
@@ -33,7 +34,7 @@ front_card.grid(row=0, column=0, columnspan=2)
 
 # Buttons
 wrong_button_img = PhotoImage(file="images/wrong.png")
-wrong_btn = Button(image=wrong_button_img, highlightthickness=0, bg=BACKGROUND_COLOR)
+wrong_btn = Button(image=wrong_button_img, highlightthickness=0, bg=BACKGROUND_COLOR, command=generate_word)
 wrong_btn.grid(row=1, column=0)
 
 right_button_img = PhotoImage(file="images/right.png")
@@ -41,4 +42,3 @@ right_btn = Button(image=right_button_img, highlightthickness=0, bg=BACKGROUND_C
 right_btn.grid(row=1, column=1)
 
 window.mainloop()
-
