@@ -1,7 +1,22 @@
 from tkinter import *
+import random
+import pandas
 
 BACKGROUND_COLOR = "#B1DDC6"
 FONT_NAME = "Arial"
+
+# ---- Create New Flash Cards
+# Pick random word from csv
+data = pandas.read_csv("data/french_words.csv")
+data_dict = data.set_index("French")["English"].to_dict()
+translation_dict = {row.French: row.English for (index, row) in data.iterrows()}
+# print(random.choice(list(translation_dict.items())))
+print(list(translation_dict.keys())[0])
+
+def generate_word():
+
+    title_text.config(text=list(translation_dict.keys())[0])
+
 
 # ---- UI Setup
 window = Tk()
@@ -22,7 +37,7 @@ wrong_btn = Button(image=wrong_button_img, highlightthickness=0, bg=BACKGROUND_C
 wrong_btn.grid(row=1, column=0)
 
 right_button_img = PhotoImage(file="images/right.png")
-right_btn = Button(image=right_button_img, highlightthickness=0, bg=BACKGROUND_COLOR)
+right_btn = Button(image=right_button_img, highlightthickness=0, bg=BACKGROUND_COLOR, command=generate_word)
 right_btn.grid(row=1, column=1)
 
 window.mainloop()
