@@ -4,11 +4,18 @@ import pandas
 
 BACKGROUND_COLOR = "#B1DDC6"
 FONT_NAME = "Arial"
+to_learn = {}
 
 # ---- Create New Flash Cards
 # Pick random word from csv
-data = pandas.read_csv("data/french_words.csv")
-to_learn = data.to_dict(orient="records")
+try:
+    data = pandas.read_csv("data/words_to_learn.csv")
+except FileNotFoundError:
+    original_data = pandas.read_csv("data/french_words.csv")
+    to_learn = original_data.to_dict(orient="records")
+else:
+    to_learn = data.to_dict(orient="records")
+
 current_card = {}
 
 
@@ -26,6 +33,13 @@ def flip_card():
     flash_card.itemconfig(title_text, text="English", fill="white")
     flash_card.itemconfig(word_text, text=current_card["English"], fill="white")
     flash_card.itemconfig(card_background, image=back_card_img)
+
+
+def is_known():
+    to_learn.remove(current_card)
+    data = pandas.DataFrame(to_learn)
+    data.to_csv("data/words_to_learn.csv", index=False)
+    generate_word()
 
 
 # ---- UI Setup
@@ -51,7 +65,7 @@ wrong_btn = Button(image=wrong_button_img, highlightthickness=0, bg=BACKGROUND_C
 wrong_btn.grid(row=1, column=0)
 
 right_button_img = PhotoImage(file="images/right.png")
-right_btn = Button(image=right_button_img, highlightthickness=0, bg=BACKGROUND_COLOR, command=generate_word)
+right_btn = Button(image=right_button_img, highlightthickness=0, bg=BACKGROUND_COLOR, command=is_known)
 right_btn.grid(row=1, column=1)
 
 generate_word()
